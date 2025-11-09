@@ -64,31 +64,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -------------------- Project Overview --------------------
-st.header("📘 Project Background / 项目背景")
+st.header("📘 Project Overview")
 st.markdown("""
-**Goal.** Predict red wine quality scores from chemistry using **Multiple Linear Regression (MLR)** and
-identify the most influential factors that drive perceived quality.
+This project explores how the **chemical properties** of red wine affect its **quality score**, based on data from the 
+UCI Machine Learning Repository. Using **Multiple Linear Regression (MLR)**, we identify which variables most strongly 
+influence the final rating — such as alcohol, acidity, sulphates, and density.
 
-**Dataset.** UCI Machine Learning Repository – *Wine Quality (Red)*, 1,599 samples with 11 chemistry features
-(e.g., alcohol, volatile acidity, citric acid, sulphates, density) and a sensory **quality score (0–10)**.
-
-**Method.** Classic OLS via `statsmodels`:
-- Checked multicollinearity (VIF < 5 for all features)
-- Residual diagnostics (Residuals vs Fitted, QQ plot)
-- Coefficient interpretation with confidence bands
-
-**Key findings.**
-- **Alcohol** and **sulphates** show **positive** association with quality  
-- **Volatile acidity** shows a **negative** association  
-- Model goodness-of-fit **R² ≈ {:.3f}** (reasonable for human-scored sensory data)
-
-**How to use this app.**  
-Use the sliders on the left to simulate chemistry values. The app will return the predicted quality with a 95% CI, and show model diagnostics below.
-
-**项目简介（中文）**  
-本项目基于 UCI 红酒质量数据集，使用多元线性回归预测酒质评分，并通过可视化解释关键影响因素。
-结果表明：**酒精度**与**硫酸盐**与质量呈正相关，**挥发性酸度**与质量呈负相关，模型拟合优度 **R² ≈ {:.3f}**。左侧滑块可交互模拟不同化学参数对评分的影响。
-""".format(model.rsquared))
+该项目基于葡萄酒化学特征，使用多元线性回归（MLR）模型预测红酒的质量评分。
+通过建模与可视化，识别出影响酒质的关键因素，并验证模型假设的有效性。
+""")
 
 # -------------------- Load Data --------------------
 @st.cache_data
