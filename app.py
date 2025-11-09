@@ -156,24 +156,38 @@ with right:
 
 st.divider()
 
-# -------------------- Visualization Section --------------------
-st.header("📈 Data Visualization")
+# -------------------- Visualization Gallery --------------------
+st.markdown("""
+Explore the model's diagnostic and exploratory visualizations below.
+These charts illustrate correlations, distributions, and regression diagnostics 
+to evaluate how chemical features influence predicted wine quality.
+""")
 
+import streamlit as st
 from pathlib import Path
 
-col1, col2 = st.columns(2)
+st.header("🖼️ Visualization Gallery")
 
-img1 = Path("Assets/Correlation_Heatmap.png")
-img2 = Path("Assets/Pairwise_Relationships.png")
+# 所有可视化图像的路径和说明文字
+image_info = [
+    ("Assets/Correlation_Heatmap.png", "Correlation Heatmap — 变量间相关性可视化"),
+    ("Assets/Pairwise_Relationships.png", "Pairwise Relationships — 成对特征关系"),
+    ("Assets/Correlation_with_Wine_Quality.png", "Correlation with Wine Quality — 变量与酒质分数的线性关系"),
+    ("Assets/Distribution_of_Wine_Features.png", "Distribution of Wine Features — 各特征分布情况"),
+    ("Assets/Outliers_Detection.png", "Outliers Detection — 异常值检测结果"),
+    ("Assets/Actual_vs_Predicted_Wine_Quality.png", "Actual vs Predicted Wine Quality — 预测结果对比"),
+]
 
-def show(p: Path, holder, caption: str):
+# 按三列展示
+cols = st.columns(3)
+for idx, (path, caption) in enumerate(image_info):
+    col = cols[idx % 3]
+    p = Path(path)
     if p.exists():
-        holder.image(str(p), caption=caption, use_container_width=True)
+        col.image(str(p), caption=caption, use_container_width=True)
     else:
-        st.error(f"Image not found: {p} (check file name & path)")
+        col.error(f"⚠️ Missing: {p.name}")
 
-show(img1, col1, "Correlation Heatmap")
-show(img2, col2, "Pairwise Relationships")
 
 # -------------------- Footer --------------------
 st.markdown("""
