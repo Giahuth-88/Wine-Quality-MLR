@@ -156,37 +156,56 @@ with right:
 
 st.divider()
 
+
 # -------------------- Visualization Gallery --------------------
+import os
+from pathlib import Path
+from PIL import Image
+import streamlit as st
+
 st.markdown("""
 Explore the model's diagnostic and exploratory visualizations below.
-These charts illustrate correlations, distributions, and regression diagnostics 
-to evaluate how chemical features influence predicted wine quality.
+These charts illustrate correlations, distributions, and regression diagnostics to evaluate how chemical features influence predicted wine quality.
 """)
-
-import streamlit as st
-from pathlib import Path
-
 st.header("🖼️ Visualization Gallery")
 
-# 所有可视化图像的路径和说明文字
-image_info = [
-    ("Assets/Correlation_Heatmap.png", "Correlation Heatmap — 变量间相关性可视化"),
-    ("Assets/Pairwise_Relationships.png", "Pairwise Relationships — 成对特征关系"),
-    ("Assets/Correlation_with_Wine_Quality.png", "Correlation with Wine Quality — 变量与酒质分数的线性关系"),
-    ("Assets/Distribution_of_Wine_Features.png", "Distribution of Wine Features — 各特征分布情况"),
-    ("Assets/Outliers_Detection.png", "Outliers Detection — 异常值检测结果"),
-    ("Assets/Actual_vs_Predicted_Wine_Quality.png", "Actual vs Predicted Wine Quality — 预测结果对比"),
+ASSETS_DIR = Path("Assets")
+
+# 调试信息：工作目录 + 资源列表
+st.caption(f"Working dir: {Path.cwd()}")
+try:
+    files = os.listdir(ASSETS_DIR)
+    st.caption(f"Assets contents ({len(files)}): {files}")
+except Exception as e:
+    st.error(f"Cannot list Assets directory: {e}")
+
+# 画廊清单（与仓库中的文件名严格一致）
+gallery = [
+    ("Assets/Correlation_Heatmap.png",              "Correlation Heatmap — 变量间相关性"),
+    ("Assets/Pairwise_Relationships.png",           "Pairwise Relationships — 成对特征关系"),
+    ("Assets/Correlation_with_Wine_Quality.png",    "Correlation with Wine Quality — 与酒质线性关系"),
+    ("Assets/Distribution_of_Wine_Features.png",    "Distribution of Wine Features — 特征分布"),
+    ("Assets/Outliers_Detection.png",               "Outliers Detection — 异常值检测"),
+    ("Assets/Actual_vs_Predicted_Wine_Quality.png", "Actual vs Predicted Wine Quality — 预测对比"),
 ]
 
-# 按三列展示
-cols = st.columns(3)
-for idx, (path, caption) in enumerate(image_info):
-    col = cols[idx % 3]
-    p = Path(path)
-    if p.exists():
-        col.image(str(p), caption=caption, use_container_width=True)
-    else:
+def show_img(path_str: str, col, caption: str):
+    p = Path(path_str)
+    if not p.is_file():
         col.error(f"⚠️ Missing: {p.name}")
+        return
+    try:
+        # 显式用 Pillow 打开，更稳；并可捕获损坏/不兼容图片
+        img = Image.open(p)
+        # 可选：打印尺寸/模式，定位问题时很有用
+        col.caption(f"{p.name} • {p.stat().st_size/1024:.1f} KB • {img.mode} {img.size}")
+        col.image(img, caption=caption, use_container_width=True)
+    except Exception as e:
+        col.error(f"Failed to render {p.name}: {e}")
+
+cols = st.columns(3)
+for i, (path, cap) in enumerate(gallery):
+    show_img(path, cols[i % 3], cap)
 
 
 # -------------------- Footer --------------------
