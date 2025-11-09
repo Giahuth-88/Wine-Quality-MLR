@@ -195,11 +195,10 @@ def show_img(path_str: str, col, caption: str):
         col.error(f"⚠️ Missing: {p.name}")
         return
     try:
-        # 显式用 Pillow 打开，更稳；并可捕获损坏/不兼容图片
         img = Image.open(p)
-        # 可选：打印尺寸/模式，定位问题时很有用
         col.caption(f"{p.name} • {p.stat().st_size/1024:.1f} KB • {img.mode} {img.size}")
-        col.image(img, caption=caption, use_container_width=True)
+        # ✅ 修复：把 col.image 改回 st.image（或不带 use_container_width 参数）
+        col.image(img, caption=caption, use_column_width=True)
     except Exception as e:
         col.error(f"Failed to render {p.name}: {e}")
 
